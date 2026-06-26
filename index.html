@@ -91,6 +91,13 @@
   .botnav button.active{color:var(--accent-2);}
   .muted{color:var(--text-muted);} .center{text-align:center;} .mt{margin-top:14px;}
   .empty{text-align:center; color:var(--text-muted); padding:30px 10px; font-size:13px;}
+  .logo-svg{background:none !important; box-shadow:none !important;} .logo-svg svg{width:74px; height:74px; display:block;}
+  .plist{display:flex; flex-direction:column;}
+  .pli{display:flex; align-items:flex-start; gap:12px; padding:13px 0; border-bottom:1px solid var(--border-soft);} .pli:last-child{border-bottom:0;}
+  .pli .pdot{width:9px; height:9px; border-radius:50%; background:var(--surface-3); margin-top:6px; flex-shrink:0;}
+  .pli .pm{flex:1; min-width:0;} .pli .ptt{font-weight:700; font-size:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .pli .pss{font-size:12.5px; color:var(--text-muted); margin-top:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;} .pli .pss .cap{text-transform:capitalize; color:var(--text-secondary);}
+  .pli .pdt{font-size:12.5px; color:var(--text-muted); white-space:nowrap; flex-shrink:0; padding-top:1px;}
   .recent{overflow-x:auto; -webkit-overflow-scrolling:touch;}
   .rhead,.rrow{display:grid; grid-template-columns:52px 116px 92px 60px 96px 84px 74px; gap:8px; align-items:center; min-width:560px; padding:9px 0; border-bottom:1px solid var(--border-soft); font-size:12px;}
   .rhead{color:var(--text-muted); text-transform:uppercase; font-size:10px; letter-spacing:.5px; font-weight:700;}
@@ -108,13 +115,13 @@
 <body>
 
 <div id="splash">
-  <div class="logo-badge">E</div>
+  <div class="logo-badge logo-svg"><svg class="brand-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 614.99 614.99" aria-label="Equita"><g><polygon fill="currentColor" fill-opacity="0.5" points="179.96 352.88 134.61 307.53 254.17 316.45 291.06 354.39 179.96 352.88"/><polygon fill="currentColor" fill-opacity="0.5" points="442.2 468.29 418.54 443.95 262.08 435.03 307.44 480.39 428.56 481.62 442.2 468.29"/><g fill-opacity="0.5"><polygon fill="currentColor" points="243.76 416.63 198.41 371.28 317.98 380.2 354.86 418.13 243.76 416.63"/></g><g><rect fill="currentColor" x="339.21" y="249.04" width="64.14" height="244.47" transform="translate(371.28 -153.79) rotate(45)"/><rect fill="currentColor" x="197.31" y="156.27" width="64.14" height="203.77" transform="translate(249.72 -86.58) rotate(45)"/><rect fill="currentColor" x="240.47" y="269.74" width="64.14" height="145.52" transform="translate(322.01 -92.4) rotate(45)"/></g></g><path fill="currentColor" d="M307.5,532.5c-124.07,0-225-100.93-225-225s100.93-225,225-225,225,100.93,225,225-100.93,225-225,225ZM307.5,111.89c-107.86,0-195.61,87.75-195.61,195.61s87.75,195.61,195.61,195.61,195.61-87.75,195.61-195.61-87.75-195.61-195.61-195.61Z"/></svg></div>
   <div class="spinner"></div>
 </div>
 
 <div id="auth" class="hidden">
   <div class="auth-head">
-    <div class="logo-badge">E</div>
+    <div class="logo-badge logo-svg"><svg class="brand-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 614.99 614.99" aria-label="Equita"><g><polygon fill="currentColor" fill-opacity="0.5" points="179.96 352.88 134.61 307.53 254.17 316.45 291.06 354.39 179.96 352.88"/><polygon fill="currentColor" fill-opacity="0.5" points="442.2 468.29 418.54 443.95 262.08 435.03 307.44 480.39 428.56 481.62 442.2 468.29"/><g fill-opacity="0.5"><polygon fill="currentColor" points="243.76 416.63 198.41 371.28 317.98 380.2 354.86 418.13 243.76 416.63"/></g><g><rect fill="currentColor" x="339.21" y="249.04" width="64.14" height="244.47" transform="translate(371.28 -153.79) rotate(45)"/><rect fill="currentColor" x="197.31" y="156.27" width="64.14" height="203.77" transform="translate(249.72 -86.58) rotate(45)"/><rect fill="currentColor" x="240.47" y="269.74" width="64.14" height="145.52" transform="translate(322.01 -92.4) rotate(45)"/></g></g><path fill="currentColor" d="M307.5,532.5c-124.07,0-225-100.93-225-225s100.93-225,225-225,225,100.93,225,225-100.93,225-225,225ZM307.5,111.89c-107.86,0-195.61,87.75-195.61,195.61s87.75,195.61,195.61,195.61,195.61-87.75,195.61-195.61-87.75-195.61-195.61-195.61Z"/></svg></div>
     <h1>Equita Agency</h1>
     <p>Owner production dashboard</p>
   </div>
@@ -150,7 +157,7 @@
 </div>
 
 <div id="gate" class="hidden">
-  <div class="logo-badge">E</div>
+  <div class="logo-badge logo-svg"><svg class="brand-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 614.99 614.99" aria-label="Equita"><g><polygon fill="currentColor" fill-opacity="0.5" points="179.96 352.88 134.61 307.53 254.17 316.45 291.06 354.39 179.96 352.88"/><polygon fill="currentColor" fill-opacity="0.5" points="442.2 468.29 418.54 443.95 262.08 435.03 307.44 480.39 428.56 481.62 442.2 468.29"/><g fill-opacity="0.5"><polygon fill="currentColor" points="243.76 416.63 198.41 371.28 317.98 380.2 354.86 418.13 243.76 416.63"/></g><g><rect fill="currentColor" x="339.21" y="249.04" width="64.14" height="244.47" transform="translate(371.28 -153.79) rotate(45)"/><rect fill="currentColor" x="197.31" y="156.27" width="64.14" height="203.77" transform="translate(249.72 -86.58) rotate(45)"/><rect fill="currentColor" x="240.47" y="269.74" width="64.14" height="145.52" transform="translate(322.01 -92.4) rotate(45)"/></g></g><path fill="currentColor" d="M307.5,532.5c-124.07,0-225-100.93-225-225s100.93-225,225-225,225,100.93,225,225-100.93,225-225,225ZM307.5,111.89c-107.86,0-195.61,87.75-195.61,195.61s87.75,195.61,195.61,195.61,195.61-87.75,195.61-195.61-87.75-195.61-195.61-195.61Z"/></svg></div>
   <h2 id="gate-title">Access required</h2>
   <p id="gate-msg">This app is for Equita agency owners. Ask your IMO admin to enable agency access on your account.</p>
   <button class="btn btn-ghost" id="gate-signout" style="margin-top:8px; padding:12px 22px;">Sign out</button>
@@ -183,6 +190,7 @@
       </div>
       <div class="card"><h3>My Monthly AP</h3><div class="chart-wrap"><canvas id="ch-mine"></canvas></div></div>
       <div class="card"><h3>My Production by Carrier</h3><div id="m-carriers"></div></div>
+      <div class="card"><h3>🕒 My Recent Submitted Business <span class="muted" style="text-transform:none; font-weight:500;">&middot; 90 days</span></h3><div id="my-recent-list"></div></div>
     </section>
 
     <section class="tabpane" id="pane-down">
@@ -202,7 +210,7 @@
         <div class="kpi"><div class="label">Medicare</div><div class="val" id="a-med">&mdash;</div><div class="sub">Enrollments</div></div>
       </div>
       <div class="card"><h3>Agency Monthly AP</h3><div class="chart-wrap"><canvas id="ch-agency"></canvas></div></div>
-      <div class="card"><h3>Recent Submitted Business <span class="muted" style="text-transform:none; font-weight:500;">&middot; last 90 days</span></h3><div id="recent-list" class="recent"></div></div>
+      <div class="card"><h3>🕒 Recent Submitted Business <span class="muted" style="text-transform:none; font-weight:500;">&middot; last 90 days</span></h3><div id="recent-list" class="recent"></div></div>
     </section>
 
     <section class="tabpane" id="pane-board">
@@ -343,7 +351,7 @@ async function rpc(fn, range){ const [s,e]=range; const { data, error } = await 
 
 async function loadAll(){
   const range = periodRange($('period').value);
-  await Promise.allSettled([ loadMine(range), loadAgency(range), loadAgents(range), loadImo(range), loadRecent() ]);
+  await Promise.allSettled([ loadMine(range), loadAgency(range), loadAgents(range), loadImo(range), loadRecent(), loadMyRecent() ]);
 }
 
 function lineChart(canvasId, labels, data){
@@ -395,15 +403,11 @@ async function loadImo(range){
   $('imo-list').innerHTML = rows.length ? rows.map(r=>'<div class="lrow '+(r.is_mine?'mine':'')+'"><div class="rank '+(r.rank<=3?'r'+r.rank:'')+'">'+r.rank+'</div><div class="nm"><div class="n">'+(r.agency||'—')+(r.is_mine?'<span class="pill">YOURS</span>':'')+'</div><div class="s">'+fmtNum(r.agent_count)+' agents</div></div><div class="amt">'+fmtMoney(r.ap)+'</div></div>').join('') : '<div class="empty">No data.</div>';
 }
 
-const fmtDate=(d)=>{ if(!d) return '—'; const p=String(d).split('-'); return p.length===3 ? p[1]+'/'+p[2] : d; };
-async function loadRecent(){
-  const el=$('recent-list'); if(!el) return;
-  const { data, error } = await sb.rpc('owner_recent_submissions', { p_days: 90 });
-  if(error){ console.warn('owner_recent_submissions', error); el.innerHTML='<div class="empty">Could not load recent business.</div>'; return; }
-  const rows = data||[];
-  if(!rows.length){ el.innerHTML='<div class="empty">No submitted business in the last 90 days.</div>'; return; }
-  el.innerHTML='<div class="rhead"><span>Date</span><span>Agent</span><span>Carrier</span><span>Type</span><span>Policy #</span><span>Status</span><span class="ra">AP</span></div>'+rows.map(r=>'<div class="rrow"><span>'+fmtDate(r.date)+'</span><span class="cap">'+((r.agent||'').toLowerCase())+'</span><span>'+(r.carrier||'—')+'</span><span><span class="tag '+((r.line||'').toLowerCase())+'">'+(r.line||'—')+'</span></span><span>'+(r.policy_id||'—')+'</span><span>'+(r.status||'—')+'</span><span class="ra">'+fmtMoney(r.premium)+'</span></div>').join('');
-}
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const fmtFull=(d)=>{ if(!d) return ''; const p=String(d).split('-'); return p.length===3 ? MON[(+p[1])-1]+' '+(+p[2])+', '+p[0] : d; };
+function policyRow(r, withAgent){ var sub=(withAgent ? '<span class="cap">'+((r.agent||'').toLowerCase())+'</span> &middot; ' : '')+fmtMoney(r.premium)+' &middot; '+(r.status||'\u2014'); return '<div class="pli"><div class="pdot"></div><div class="pm"><div class="ptt">'+(r.carrier||'\u2014')+' &middot; '+(r.policy_id||'\u2014')+'</div><div class="pss">'+sub+'</div></div><div class="pdt">'+fmtFull(r.date)+'</div></div>'; }
+async function loadRecent(){ var el=$('recent-list'); if(!el) return; var res = await sb.rpc('owner_recent_submissions', { p_days: 90 }); if(res.error){ console.warn('owner_recent_submissions', res.error); el.innerHTML='<div class="empty">Could not load recent business.</div>'; return; } var rows=res.data||[]; el.innerHTML = rows.length ? '<div class="plist">'+rows.map(function(r){return policyRow(r,true);}).join('')+'</div>' : '<div class="empty">No submitted business in the last 90 days.</div>'; }
+async function loadMyRecent(){ var el=$('my-recent-list'); if(!el) return; var res = await sb.rpc('owner_personal_recent', { p_days: 90 }); if(res.error){ console.warn('owner_personal_recent', res.error); el.innerHTML='<div class="empty">Could not load your recent business.</div>'; return; } var rows=res.data||[]; el.innerHTML = rows.length ? '<div class="plist">'+rows.map(function(r){return policyRow(r,false);}).join('')+'</div>' : '<div class="empty">No personal submitted business in the last 90 days.</div>'; }
 sb.auth.onAuthStateChange((evt)=>{ if(evt==='SIGNED_OUT'){ show('auth'); } });
 if(location.search){ history.replaceState(null,'',location.pathname); }
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('service-worker.js').catch(()=>{}); }
