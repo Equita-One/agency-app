@@ -91,6 +91,12 @@
   .botnav button.active{color:var(--accent-2);}
   .muted{color:var(--text-muted);} .center{text-align:center;} .mt{margin-top:14px;}
   .empty{text-align:center; color:var(--text-muted); padding:30px 10px; font-size:13px;}
+  .recent{overflow-x:auto; -webkit-overflow-scrolling:touch;}
+  .rhead,.rrow{display:grid; grid-template-columns:52px 116px 92px 60px 96px 84px 74px; gap:8px; align-items:center; min-width:560px; padding:9px 0; border-bottom:1px solid var(--border-soft); font-size:12px;}
+  .rhead{color:var(--text-muted); text-transform:uppercase; font-size:10px; letter-spacing:.5px; font-weight:700;}
+  .rrow span{white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .rrow .ra,.rhead .ra{text-align:right; font-weight:700;} .rrow .cap{text-transform:capitalize;}
+  .tag{font-size:10px; font-weight:700; padding:1px 6px; border-radius:5px;} .tag.life{background:rgba(59,130,246,.18); color:#93c5fd;} .tag.medicare{background:rgba(16,185,129,.18); color:#6ee7b7;}
   .drawer-bg{position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:80; display:none;}
   .drawer-bg.open{display:block;}
   .drawer{position:fixed; top:0; right:0; bottom:0; width:80%; max-width:320px; background:var(--surface); z-index:81; transform:translateX(100%); transition:.25s; padding:calc(22px + env(safe-area-inset-top)) 20px; display:flex; flex-direction:column; gap:8px;}
@@ -196,6 +202,7 @@
         <div class="kpi"><div class="label">Medicare</div><div class="val" id="a-med">&mdash;</div><div class="sub">Enrollments</div></div>
       </div>
       <div class="card"><h3>Agency Monthly AP</h3><div class="chart-wrap"><canvas id="ch-agency"></canvas></div></div>
+      <div class="card"><h3>Recent Submitted Business <span class="muted" style="text-transform:none; font-weight:500;">&middot; last 90 days</span></h3><div id="recent-list" class="recent"></div></div>
     </section>
 
     <section class="tabpane" id="pane-board">
@@ -336,7 +343,7 @@ async function rpc(fn, range){ const [s,e]=range; const { data, error } = await 
 
 async function loadAll(){
   const range = periodRange($('period').value);
-  await Promise.allSettled([ loadMine(range), loadAgency(range), loadAgents(range), loadImo(range) ]);
+  await Promise.allSettled([ loadMine(range), loadAgency(range), loadAgents(range), loadImo(range), loadRecent() ]);
 }
 
 function lineChart(canvasId, labels, data){
@@ -388,6 +395,15 @@ async function loadImo(range){
   $('imo-list').innerHTML = rows.length ? rows.map(r=>'<div class="lrow '+(r.is_mine?'mine':'')+'"><div class="rank '+(r.rank<=3?'r'+r.rank:'')+'">'+r.rank+'</div><div class="nm"><div class="n">'+(r.agency||'—')+(r.is_mine?'<span class="pill">YOURS</span>':'')+'</div><div class="s">'+fmtNum(r.agent_count)+' agents</div></div><div class="amt">'+fmtMoney(r.ap)+'</div></div>').join('') : '<div class="empty">No data.</div>';
 }
 
+const fmtDate=(d)=>{ if(!d) return '—'; const p=String(d).split('-'); return p.length===3 ? p[1]+'/'+p[2] : d; };
+async function loadRecent(){
+  const el=$('recent-list'); if(!el) return;
+  const { data, error } = await sb.rpc('owner_recent_submissions', { p_days: 90 });
+  if(error){ console.warn('owner_recent_submissions', error); el.innerHTML='<div class="empty">Could not load recent business.</div>'; return; }
+  const rows = data||[];
+  if(!rows.length){ el.innerHTML='<div class="empty">No submitted business in the last 90 days.</div>'; return; }
+  el.innerHTML='<div class="rhead"><span>Date</span><span>Agent</span><span>Carrier</span><span>Type</span><span>Policy #</span><span>Status</span><span class="ra">AP</span></div>'+rows.map(r=>'<div class="rrow"><span>'+fmtDate(r.date)+'</span><span class="cap">'+((r.agent||'').toLowerCase())+'</span><span>'+(r.carrier||'—')+'</span><span><span class="tag '+((r.line||'').toLowerCase())+'">'+(r.line||'—')+'</span></span><span>'+(r.policy_id||'—')+'</span><span>'+(r.status||'—')+'</span><span class="ra">'+fmtMoney(r.premium)+'</span></div>').join('');
+}
 sb.auth.onAuthStateChange((evt)=>{ if(evt==='SIGNED_OUT'){ show('auth'); } });
 if(location.search){ history.replaceState(null,'',location.pathname); }
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('service-worker.js').catch(()=>{}); }
