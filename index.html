@@ -405,13 +405,16 @@ async function loadImo(range){
 
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const fmtFull=(d)=>{ if(!d) return ''; const p=String(d).split('-'); return p.length===3 ? MON[(+p[1])-1]+' '+(+p[2])+', '+p[0] : d; };
-function policyRow(r, withAgent){ var sub=(withAgent ? '<span class="cap">'+((r.agent||'').toLowerCase())+'</span> &middot; ' : '')+fmtMoney(r.premium)+' &middot; '+(r.status||'\u2014'); return '<div class="pli"><div class="pdot"></div><div class="pm"><div class="ptt">'+(r.carrier||'\u2014')+' &middot; '+(r.policy_id||'\u2014')+'</div><div class="pss">'+sub+'</div></div><div class="pdt">'+fmtFull(r.date)+'</div></div>'; }
+function shortName(n){if(!n)return "";n=String(n).trim();var first="",last="";if(n.indexOf(",")>=0){var p=n.split(",");last=(p[0]||"").trim();first=((p[1]||"").trim().split(/\s+/)[0]||"");}else{var w=n.split(/\s+/);first=w[0]||"";last=w.length>1?w[w.length-1]:"";}var tc=function(s){return s?s.charAt(0).toUpperCase()+s.slice(1).toLowerCase():"";};if(!last)return tc(first);return (first?first.charAt(0).toUpperCase()+". ":"")+tc(last);}
+function policyRow(r, withAgent){ var sub=(withAgent ? '<span class="cap">'+((shortName(r.agent)||'').toLowerCase())+'</span> &middot; ' : '')+fmtMoney(r.premium)+' &middot; '+(r.status||'\u2014'); return '<div class="pli"><div class="pdot"></div><div class="pm"><div class="ptt">'+(r.carrier||'\u2014')+' &middot; '+(r.policy_id||'\u2014')+'</div><div class="pss">'+sub+'</div></div><div class="pdt">'+fmtFull(r.date)+'</div></div>'; }
 async function loadRecent(){ var el=$('recent-list'); if(!el) return; var res = await sb.rpc('owner_recent_submissions', { p_days: 90 }); if(res.error){ console.warn('owner_recent_submissions', res.error); el.innerHTML='<div class="empty">Could not load recent business.</div>'; return; } var rows=res.data||[]; el.innerHTML = rows.length ? '<div class="plist">'+rows.map(function(r){return policyRow(r,true);}).join('')+'</div>' : '<div class="empty">No submitted business in the last 90 days.</div>'; }
 async function loadMyRecent(){ var el=$('my-recent-list'); if(!el) return; var res = await sb.rpc('owner_personal_recent', { p_days: 90 }); if(res.error){ console.warn('owner_personal_recent', res.error); el.innerHTML='<div class="empty">Could not load your recent business.</div>'; return; } var rows=res.data||[]; el.innerHTML = rows.length ? '<div class="plist">'+rows.map(function(r){return policyRow(r,false);}).join('')+'</div>' : '<div class="empty">No personal submitted business in the last 90 days.</div>'; }
 sb.auth.onAuthStateChange((evt)=>{ if(evt==='SIGNED_OUT'){ show('auth'); } });
 if(location.search){ history.replaceState(null,'',location.pathname); }
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('service-worker.js').catch(()=>{}); }
 route();
+
+if("serviceWorker" in navigator){try{navigator.serviceWorker.addEventListener("controllerchange",function(){if(window.__rl)return;window.__rl=1;location.reload();});}catch(e){}}
 </script>
 </body>
 </html>
