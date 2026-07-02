@@ -1,0 +1,19 @@
+# Gitleaks config for the Equita / RBW app repos.
+# Default rules + an allowlist for the PUBLIC Supabase keys (public by design;
+# access is gated by RLS, not key secrecy) so real secrets are still caught.
+
+title = "Equita app gitleaks config"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Public-by-design Supabase keys used in the browser apps"
+regexes = [
+  '''sb_publishable_[A-Za-z0-9_\-]{10,}''',
+  '''eyJ[A-Za-z0-9_\-]{10,}\.[A-Za-z0-9_\-]{10,}\.[A-Za-z0-9_\-]{10,}''',
+]
+paths = [
+  '''(.*)?node_modules(/.*)?''',
+  '''(.*)?package-lock\.json''',
+]
