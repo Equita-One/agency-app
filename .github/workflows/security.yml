@@ -19,10 +19,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Run Gitleaks
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITLEAKS_CONFIG: .gitleaks.toml
+      # Free Gitleaks CLI (the gitleaks-action@v2 wrapper now requires a paid
+      # GITLEAKS_LICENSE for org-owned repos; the CLI binary is MIT-licensed and free).
+      - name: Run Gitleaks (CLI)
+        run: |
+          VERSION=8.18.4
+          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${VERSION}/gitleaks_${VERSION}_linux_x64.tar.gz" | tar -xz gitleaks
+          ./gitleaks detect --source . --no-git --config .gitleaks.toml --redact --no-banner --exit-code 1
 
   semgrep:
     name: Semgrep (SAST - advisory)
