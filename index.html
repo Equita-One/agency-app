@@ -416,5 +416,9 @@ route();
 
 if("serviceWorker" in navigator){try{navigator.serviceWorker.addEventListener("controllerchange",function(){if(window.__rl)return;window.__rl=1;location.reload();});}catch(e){}}
 </script>
+
+<script>
+(function(){function mk(){var d=document.getElementById("drawer");if(!d)return false;if(d.querySelector("[data-ctr]"))return true;var leaves=[].slice.call(d.querySelectorAll("*")).filter(function(e){return e.children.length===0;});var ref=leaves.filter(function(e){return /refresh data/i.test(e.textContent||"");})[0]||leaves.filter(function(e){return /sign out/i.test(e.textContent||"");})[0];if(!ref)return false;var host=ref.closest("button,a,[role=\"button\"]")||ref.parentElement||ref;var node=host.cloneNode(true);node.setAttribute("data-ctr","1");node.textContent="📝 Contracting";node.removeAttribute("onclick");node.style.cursor="pointer";node.addEventListener("click",function(ev){ev.preventDefault();ev.stopPropagation();location.href="contracting.html";},true);host.parentElement.insertBefore(node,host);return true;}if(!mk()){var o=new MutationObserver(function(){if(mk())o.disconnect();});o.observe(document.documentElement,{childList:true,subtree:true});setTimeout(function(){o.disconnect();},8000);}})();
+</script>
 </body>
 </html>
