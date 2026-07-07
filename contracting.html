@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>Contracting · Equita</title>
+<link rel="manifest" href="manifest.webmanifest"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{--bg:#0f1420;--panel:#161c2b;--field:#0d121c;--line:#28324a;--ink:#cbd5e1;--muted:#6b7a90;--sky:#06b6d4;--sky2:#22d3ee;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif;-webkit-tap-highlight-color:transparent}
+  .bar{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:10px;background:#0c111b;border-bottom:1px solid #1c2436;padding:calc(env(safe-area-inset-top) + 12px) 14px 12px}
+  .back{border:0;background:transparent;color:var(--sky2);font-size:15px;cursor:pointer;padding:4px 6px;font-weight:600}
+  .brand{font-weight:700;color:#e2e8f0;font-size:15px}
+  .wrap{max-width:640px;margin:0 auto;padding:14px}
+  h1{font-size:16px;color:#fff;margin:0 0 12px}
+  .tabs{display:flex;gap:4px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:4px;margin-bottom:12px}
+  .tabs button{flex:1;border:0;cursor:pointer;border-radius:8px;padding:9px 10px;font-size:13px;font-weight:600;background:transparent;color:#8b95a5}
+  .tabs button.on{background:var(--sky);color:#04222b}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+  h3{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--sky2);margin:0 0 10px}
+  label{display:block;font-size:11px;color:var(--muted);margin-bottom:3px}
+  input,select{width:100%;box-sizing:border-box;background:var(--field);border:1px solid var(--line);border-radius:9px;color:#e2e8f0;font-size:16px;padding:10px 11px;outline:none}
+  input:focus,select:focus{border-color:var(--sky2)}
+  .g{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  @media(max-width:460px){.g{grid-template-columns:1fr}}
+  .carriers{display:grid;grid-template-columns:1fr;gap:7px;max-height:300px;overflow:auto}
+  .ck{display:flex;align-items:center;gap:9px;background:var(--field);border:1px solid var(--line);border-radius:9px;padding:10px 11px;font-size:14px}
+  .ck input{width:20px;height:20px}
+  .aff{border:1px dashed #1e4b66;background:#0a2130;border-radius:10px;padding:11px 12px;font-size:13px;margin-top:11px}
+  .lk{color:var(--sky2);word-break:break-all;font-size:11px}
+  .btn{width:100%;border:0;border-radius:11px;padding:13px;font-weight:700;font-size:15px;cursor:pointer;background:var(--sky);color:#04222b;margin-top:6px}
+  .btn:disabled{opacity:.5}
+  table{width:100%;border-collapse:collapse;font-size:12.5px}
+  th{text-align:left;color:var(--muted);font-size:10px;text-transform:uppercase;padding:6px 4px;border-bottom:2px solid var(--line)}
+  td{padding:11px 4px;border-bottom:1px solid #1c2436;vertical-align:middle}
+  .banner{border-radius:10px;padding:11px 12px;font-size:13px;margin-bottom:12px}
+  .ok{background:#0f2f22;border:1px solid #1c5540;color:#86efac}.err{background:#3a1414;border:1px solid #5b2020;color:#fca5a5}
+  .legend{display:flex;gap:10px;flex-wrap:wrap;font-size:10px;color:#94a3b8;margin:4px 0 12px}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;vertical-align:1px;margin-right:3px}
+  .muted{color:var(--muted)}.hidden{display:none}.note{font-size:11px;color:var(--muted);margin-top:6px}
+  #login{margin-top:30px}
+</style>
+</head>
+<body>
+<div class="bar">
+  <button class="back" onclick="location.href='index.html'">‹ Back</button>
+  <span class="brand">Contracting</span>
+</div>
+<div class="wrap">
+  <div id="login" class="card hidden">
+    <h3>Sign in</h3>
+    <label>Email</label><input id="li-email" type="email" autocomplete="username"/>
+    <label style="margin-top:8px">Password</label><input id="li-pass" type="password" autocomplete="current-password"/>
+    <button class="btn" id="li-go" style="margin-top:12px">Sign in</button>
+    <div class="note">Uses the same login as the Equita app.</div>
+  </div>
+
+  <div id="app" class="hidden">
+    <div class="tabs">
+      <button class="tab on" data-t="new">New intake</button>
+      <button class="tab" data-t="list">My submissions</button>
+    </div>
+    <div id="msg"></div>
+
+    <div id="v-new">
+      <div class="card">
+        <h3>Agent (the recruit)</h3>
+        <div class="g">
+          <div><label>First name</label><input id="af"/></div>
+          <div><label>Last name</label><input id="al"/></div>
+        </div>
+        <div style="margin-top:9px"><label>Email *</label><input id="ae" type="email"/></div>
+        <div class="g" style="margin-top:9px">
+          <div><label>Phone</label><input id="ap" type="tel"/></div>
+          <div><label>State</label><input id="ast" maxlength="2" placeholder="TX"/></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Builder — auto-resolved</h3>
+        <div id="builderLine" class="muted" style="font-size:13px">Resolving…</div>
+        <div class="aff" id="affBox">…</div>
+      </div>
+      <div class="card">
+        <h3 id="carHead">Carriers appointed</h3>
+        <div class="carriers" id="carriers"><span class="muted">Loading…</span></div>
+      </div>
+      <div class="card">
+        <h3>Contract level</h3>
+        <select id="level"><option value="">Select…</option></select>
+        <div class="note" id="levelNote"></div>
+        <button class="btn" id="submit">Submit contracting request</button>
+      </div>
+    </div>
+
+    <div id="v-list" class="hidden">
+      <div class="card">
+        <h3>Submitted forms — stage tracking</h3>
+        <div class="legend">
+          <span><span class="dot" style="background:#ef4444"></span>No profile</span>
+          <span><span class="dot" style="background:#f59e0b"></span>Login</span>
+          <span><span class="dot" style="background:#eab308"></span>1–2</span>
+          <span><span class="dot" style="background:#2dd4bf"></span>3+</span>
+          <span><span class="dot" style="background:#22c55e"></span>Writing #</span>
+        </div>
+        <table><thead><tr><th>Date</th><th>Agent</th><th>Level</th><th>Status</th></tr></thead>
+        <tbody id="rows"><tr><td colspan="4" class="muted">Loading…</td></tr></tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SB_URL="https://tcivqllwxodihiphhknp.supabase.co";
+const SB_KEY="sb_publishable_dwkJS210Aqbe77Wlq6wmvQ_kTjIqBt2";
+const sb=supabase.createClient(SB_URL,SB_KEY);
+const $=id=>document.getElementById(id);
+let AFF=null;
+const STAGES=[["red","#ef4444"],["orange","#f59e0b"],["yellow","#eab308"],["turquoise","#2dd4bf"],["green","#22c55e"]];
+function dots(s){const i=Math.max(0,STAGES.findIndex(x=>x[0]===s));let h="";for(let n=0;n<5;n++){const c=STAGES[n][1];const on=n===i;h+=`<span style="display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:4px;background:${on?c:"transparent"};border:2px solid ${c};opacity:${on?1:.4};box-shadow:${on?`0 0 6px ${c}`:"none"}"></span>`;}return h;}
+function msg(t,ok){$("msg").innerHTML=t?`<div class="banner ${ok?"ok":"err"}">${t}</div>`:"";}
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("on",x===b));$("v-new").classList.toggle("hidden",b.dataset.t!=="new");$("v-list").classList.toggle("hidden",b.dataset.t!=="list");if(b.dataset.t==="list")loadList();});
+$("li-go").onclick=async()=>{const {error}=await sb.auth.signInWithPassword({email:$("li-email").value.trim(),password:$("li-pass").value});if(error){msg(error.message);return;}location.reload();};
+async function boot(){
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session){$("login").classList.remove("hidden");return;}
+  $("app").classList.remove("hidden");
+  const {data:{user}}=await sb.auth.getUser();
+  const {data:p}=await sb.from("profiles").select("*").eq("id",user.id).single();
+  if(p)$("builderLine").textContent=(p.display_name||p.agent_name||user.email)+" · resolved from your login";
+  const {data:a}=await sb.rpc("ci_my_affiliation");AFF=a;
+  $("affBox").innerHTML=AFF?`<b style="color:var(--sky2)">Affiliation:</b> ${AFF.name}<br><span class="muted">Agent's email will include this link:</span><br><span class="lk">${AFF.custom_link||""}</span>`:`<b style="color:var(--sky2)">Affiliation:</b> not matched yet.`;
+  await loadCarriers();await loadLevels();
+}
+async function loadCarriers(){
+  const {data,error}=await sb.rpc("ci_affiliation_carriers",{p_affiliation_id:AFF?AFF.id:null});
+  if(error||!data||!data.length){$("carriers").innerHTML='<span class="muted">No carriers scoped to this affiliation.</span>';return;}
+  $("carHead").innerHTML=`Carriers appointed <span style="font-size:10px;color:#f59e0b;background:#3a2a08;border:1px solid #59430c;border-radius:999px;padding:1px 8px;margin-left:6px">${data.length}</span>`;
+  $("carriers").innerHTML=data.map(c=>`<label class="ck"><input type="checkbox" value="${c.surelc_carrier_id}"/>${c.name}</label>`).join("");
+}
+async function loadLevels(){
+  const {data}=await sb.rpc("ci_contract_levels",{p_affiliation_id:AFF?AFF.id:null,p_carrier:null});
+  const seen=new Set(),opts=[];(data||[]).forEach(r=>{if(!seen.has(r.tier_label)){seen.add(r.tier_label);opts.push(r);}});
+  $("level").innerHTML='<option value="">Select…</option>'+opts.map(r=>`<option value="${r.tier_label}">${r.tier_label}${r.comm_level?` — lvl ${r.comm_level}`:""}${r.comm_code?` (${r.comm_code})`:""}</option>`).join("");
+  $("levelNote").textContent=opts.length?(opts[0].scoped?"Levels scoped to your affiliation.":"Equita default schedule by carrier."):"No preset levels.";
+}
+$("submit").onclick=async()=>{
+  msg("");
+  if(!$("ae").value.trim()){msg("Agent email is required.");return;}
+  const {data:{user}}=await sb.auth.getUser();
+  const {data:p}=await sb.from("profiles").select("*").eq("id",user.id).single();
+  const bp=String((p&&(p.display_name||p.agent_name))||"").split(" ");
+  const carrier_ids=[...document.querySelectorAll('#carriers input:checked')].map(i=>Number(i.value));
+  const payload={agent_first:$("af").value,agent_last:$("al").value,agent_email:$("ae").value.trim(),agent_phone:$("ap").value,agent_state:$("ast").value,
+    builder_first:bp[0]||"",builder_last:bp.slice(1).join(" ")||"",builder_email:(p&&p.email)||user.email||"",
+    affiliation_id:AFF?AFF.id:null,contract_level:$("level").value,carrier_ids};
+  if(!payload.builder_email){msg("No builder email on your profile.");return;}
+  $("submit").disabled=true;$("submit").textContent="Submitting…";
+  const {data,error}=await sb.rpc("submit_contracting_intake",{payload});
+  if(error){msg(error.message);$("submit").disabled=false;$("submit").textContent="Submit contracting request";return;}
+  let note="";
+  try{const {data:{session}}=await sb.auth.getSession();
+    const r=await fetch(`${SB_URL}/functions/v1/send-contracting-emails`,{method:"POST",headers:{Authorization:`Bearer ${session.access_token}`,"Content-Type":"application/json"},body:JSON.stringify({intake_id:data.intake_id})});
+    if(!r.ok){const j=await r.json().catch(()=>({}));note=j.reason?` (emails pending)`:" (emails not sent yet)";}
+  }catch(e){note=" (emails not sent yet)";}
+  msg(`Submitted for ${data.agent.first||""} ${data.agent.last||""}.${note}`,true);
+  ["af","al","ae","ap","ast"].forEach(id=>$(id).value="");
+  document.querySelectorAll('#carriers input:checked').forEach(i=>i.checked=false);$("level").value="";
+  $("submit").disabled=false;$("submit").textContent="Submit contracting request";
+};
+async function loadList(){
+  const {data,error}=await sb.from("contracting_intake").select("created_at,agent_first,agent_last,contract_level,contract_status").order("created_at",{ascending:false});
+  if(error){$("rows").innerHTML=`<tr><td colspan="4" class="err">${error.message}</td></tr>`;return;}
+  if(!data.length){$("rows").innerHTML='<tr><td colspan="4" class="muted">No submissions yet.</td></tr>';return;}
+  $("rows").innerHTML=data.map(r=>`<tr><td>${new Date(r.created_at).toLocaleDateString()}</td><td>${(r.agent_first||"")+" "+(r.agent_last||"")}</td><td>${r.contract_level||'—'}</td><td>${dots(r.contract_status||"red")}</td></tr>`).join("");
+}
+boot();
+</script>
+</body>
+</html>
