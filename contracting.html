@@ -76,10 +76,15 @@
           <div><label>Phone</label><input id="ap" type="tel"/></div>
           <div><label>State</label><input id="ast" maxlength="2" placeholder="TX"/></div>
         </div>
+        <div class="g" style="margin-top:9px">
+          <div><label>City</label><input id="aci"/></div>
+          <div><label>NPN</label><input id="anp" inputmode="numeric"/></div>
+        </div>
       </div>
       <div class="card">
         <h3>Builder — auto-resolved</h3>
-        <div id="builderLine" class="muted" style="font-size:13px">Resolving…</div>
+        <label>Submitting builder</label><input id="bname" readonly style="opacity:.8;cursor:default"/>
+        <div id="builderLine" class="muted" style="font-size:13px;margin-top:6px">Resolving…</div>
         <div class="aff" id="affBox">…</div>
       </div>
       <div class="card">
@@ -128,7 +133,9 @@ async function boot(){
   $("app").classList.remove("hidden");
   const {data:{user}}=await sb.auth.getUser();
   const {data:p}=await sb.from("profiles").select("*").eq("id",user.id).single();
-  if(p)$("builderLine").textContent=(p.display_name||p.agent_name||user.email)+" · resolved from your login";
+  const bn=(p&&(p.display_name||p.agent_name))||user.email;
+  if(p)$("builderLine").textContent=bn+" · resolved from your login";
+  $("bname").value=bn;
   const {data:a}=await sb.rpc("ci_my_affiliation");AFF=a;
   $("affBox").innerHTML=AFF?`<b style="color:var(--sky2)">Affiliation:</b> ${AFF.name}<br><span class="muted">Agent's email will include this link:</span><br><span class="lk">${AFF.custom_link||""}</span>`:`<b style="color:var(--sky2)">Affiliation:</b> not matched yet.`;
   await loadCarriers();await loadLevels();
@@ -152,7 +159,7 @@ $("submit").onclick=async()=>{
   const {data:p}=await sb.from("profiles").select("*").eq("id",user.id).single();
   const bp=String((p&&(p.display_name||p.agent_name))||"").split(" ");
   const carrier_ids=[...document.querySelectorAll('#carriers input:checked')].map(i=>Number(i.value));
-  const payload={agent_first:$("af").value,agent_last:$("al").value,agent_email:$("ae").value.trim(),agent_phone:$("ap").value,agent_state:$("ast").value,
+  const payload={agent_first:$("af").value,agent_last:$("al").value,agent_email:$("ae").value.trim(),agent_phone:$("ap").value,agent_state:$("ast").value,agent_city:$("aci").value,agent_npn:$("anp").value,
     builder_first:bp[0]||"",builder_last:bp.slice(1).join(" ")||"",builder_email:(p&&p.email)||user.email||"",
     affiliation_id:AFF?AFF.id:null,contract_level:$("level").value,carrier_ids};
   if(!payload.builder_email){msg("No builder email on your profile.");return;}
@@ -165,7 +172,7 @@ $("submit").onclick=async()=>{
     if(!r.ok){const j=await r.json().catch(()=>({}));note=j.reason?` (emails pending)`:" (emails not sent yet)";}
   }catch(e){note=" (emails not sent yet)";}
   msg(`Submitted for ${data.agent.first||""} ${data.agent.last||""}.${note}`,true);
-  ["af","al","ae","ap","ast"].forEach(id=>$(id).value="");
+  ["af","al","ae","ap","ast","aci","anp"].forEach(id=>$(id).value="");
   document.querySelectorAll('#carriers input:checked').forEach(i=>i.checked=false);$("level").value="";
   $("submit").disabled=false;$("submit").textContent="Submit contracting request";
 };
