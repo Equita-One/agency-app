@@ -148,7 +148,7 @@ async function loadCarriers(){
 }
 async function loadLevels(){
   const {data}=await sb.rpc("ci_contract_levels",{p_affiliation_id:AFF?AFF.id:null,p_carrier:null});
-  const seen=new Set(),opts=[];(data||[]).forEach(r=>{if(r.comm_level&&!seen.has(r.comm_level)){seen.add(r.comm_level);opts.push(r);}});
+  const seen=new Set(),opts=[];(data||[]).forEach(r=>{if(r.comm_level&&Number(r.comm_level)>0&&!seen.has(r.comm_level)){seen.add(r.comm_level);opts.push(r);}});
   opts.sort((a,b)=>Number(a.comm_level)-Number(b.comm_level));
   $("level").innerHTML='<option value="">Select…</option>'+opts.map(r=>`<option value="${r.comm_level}|${r.comm_code||""}">${r.comm_level}%</option>`).join("");
   $("levelNote").textContent=opts.length?(opts[0].scoped?"Levels scoped to your affiliation.":"Equita default schedule by carrier."):"No preset levels.";
