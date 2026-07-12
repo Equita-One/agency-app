@@ -95,6 +95,9 @@
         <h3>Contract level</h3>
         <select id="level"><option value="">Select…</option></select>
         <div class="note" id="levelNote"></div>
+        <div style="margin-top:14px"><label>Upline / manager <span class="muted">(agent is placed under)</span></label>
+          <select id="upline"><option value="">Select…</option></select>
+          <div class="note" id="uplineNote"></div></div>
         <button class="btn" id="submit">Submit contracting request</button>
       </div>
     </div>
@@ -138,7 +141,13 @@ async function boot(){
   $("bname").value=bn;
   const {data:a}=await sb.rpc("ci_my_affiliation");AFF=a;
   $("affBox").innerHTML=AFF?`<b style="color:var(--sky2)">Affiliation:</b> ${AFF.name}<br><span class="muted">Agent's email will include this link:</span><br><span class="lk">${AFF.custom_link||""}</span>`:`<b style="color:var(--sky2)">Affiliation:</b> not matched yet.`;
-  await loadCarriers();await loadLevels();
+  await loadCarriers();await loadLevels();await loadUplines();
+}
+async function loadUplines(){
+  const {data}=await sb.rpc("list_upline_candidates",{p_affiliation_id:AFF?AFF.id:null});
+  const opts=data||[];
+  $("upline").innerHTML='<option value="">Select…</option>'+opts.map(u=>`<option value="${u.producer_id}">${u.name}${u.npn?` · NPN ${u.npn}`:""}${u.ready?"":" (profile incomplete)"}</option>`).join("");
+  $("uplineNote").textContent=opts.length?"The upline's name, comp level, and signature auto-fill on the agent's carrier forms.":"No uplines with a signature on file yet — uplines register in the agent portal and sign once first.";
 }
 async function loadCarriers(){
   const {data,error}=await sb.rpc("ci_affiliation_carriers",{p_affiliation_id:AFF?AFF.id:null});
@@ -148,7 +157,7 @@ async function loadCarriers(){
 }
 async function loadLevels(){
   const {data}=await sb.rpc("ci_contract_levels",{p_affiliation_id:AFF?AFF.id:null,p_carrier:null});
-  const seen=new Set(),opts=[];(data||[]).forEach(r=>{if(r.comm_level&&Number(r.comm_level)>0&&!seen.has(r.comm_level)){seen.add(r.comm_level);opts.push(r);}});
+  const seen=new Set(),opts=[];(data||[]).forEach(r=>{if(r.comm_level&&!seen.has(r.comm_level)){seen.add(r.comm_level);opts.push(r);}});
   opts.sort((a,b)=>Number(a.comm_level)-Number(b.comm_level));
   $("level").innerHTML='<option value="">Select…</option>'+opts.map(r=>`<option value="${r.comm_level}|${r.comm_code||""}">${r.comm_level}%</option>`).join("");
   $("levelNote").textContent=opts.length?(opts[0].scoped?"Levels scoped to your affiliation.":"Equita default schedule by carrier."):"No preset levels.";
@@ -162,7 +171,7 @@ $("submit").onclick=async()=>{
   const carrier_ids=[...document.querySelectorAll('#carriers input:checked')].map(i=>Number(i.value));
   const payload={agent_first:$("af").value,agent_last:$("al").value,agent_email:$("ae").value.trim(),agent_phone:$("ap").value,agent_state:$("ast").value,agent_city:$("aci").value,agent_npn:$("anp").value,
     builder_first:bp[0]||"",builder_last:bp.slice(1).join(" ")||"",builder_email:(p&&p.email)||user.email||"",
-    affiliation_id:AFF?AFF.id:null,contract_level:(String($("level").value||"").split("|")[0]?String($("level").value||"").split("|")[0]+"%":""),contract_level_code:String($("level").value||"").split("|")[1]||"",carrier_ids};
+    affiliation_id:AFF?AFF.id:null,contract_level:(String($("level").value||"").split("|")[0]?String($("level").value||"").split("|")[0]+"%":""),contract_level_code:String($("level").value||"").split("|")[1]||"",upline_producer_id:$("upline").value||null,carrier_ids};
   if(!payload.builder_email){msg("No builder email on your profile.");return;}
   $("submit").disabled=true;$("submit").textContent="Submitting…";
   const {data,error}=await sb.rpc("submit_contracting_intake",{payload});
@@ -174,7 +183,7 @@ $("submit").onclick=async()=>{
   }catch(e){note=" (emails not sent yet)";}
   msg(`Submitted for ${data.agent.first||""} ${data.agent.last||""}.${note}`,true);
   ["af","al","ae","ap","ast","aci","anp"].forEach(id=>$(id).value="");
-  document.querySelectorAll('#carriers input:checked').forEach(i=>i.checked=false);$("level").value="";
+  document.querySelectorAll('#carriers input:checked').forEach(i=>i.checked=false);$("level").value="";$("upline").value="";
   $("submit").disabled=false;$("submit").textContent="Submit contracting request";
 };
 async function loadList(){
