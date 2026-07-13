@@ -1,5 +1,5 @@
 // Equita Agency PWA — offline shell cache
-const CACHE = 'equita-agency-v5';
+const CACHE = 'equita-agency-v6';
 const ASSETS = ['./', './index.html','./contracting.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));
