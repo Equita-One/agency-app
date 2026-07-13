@@ -16,7 +16,7 @@
   :root{
     --bg:#16181c; --bg-2:#1b1d22; --surface:#212429; --surface-2:#292d33; --surface-3:#33373e;
     --border:#3a3f47; --border-soft:#2a2e35; --text:#eef1f4; --text-secondary:#aab1bb; --text-muted:#7e858f;
-    --accent:#2E5AAC; --accent-2:#5B8AD6; --life:#3b82f6; --medicare:#10b981; --gold:#f5b301;
+    --accent:#2E5AAC; --accent-2:#2E5AAC; --life:#3b82f6; --medicare:#10b981; --gold:#f5b301;
     --success:#10b981; --warning:#f59e0b; --danger:#ef4444; --shadow:0 4px 24px rgba(0,0,0,.25);
   }
   *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
@@ -61,6 +61,8 @@
   .topbar .who .agency{font-weight:800; font-size:16px; letter-spacing:-.2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
   .topbar .who .sub{font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:.6px;}
   .period{background:var(--surface-2); border:1px solid var(--border); color:var(--text); border-radius:10px; padding:8px 10px; font-size:13px; font-weight:600;}
+  .period-bar{display:flex; align-items:center; justify-content:center; gap:10px; padding:12px 16px; background:var(--bg); border-bottom:1px solid var(--border-soft);}
+  .period-bar .period{flex:1; min-width:0; max-width:200px; text-align:center;}
   .period-date::-webkit-calendar-picker-indicator{filter:invert(0.75);cursor:pointer;}
   .avatar{width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,#2E5AAC,#3b82f6); display:grid; place-items:center; font-weight:800; color:#fff; cursor:pointer; flex-shrink:0;}
   .iconbtn{width:38px; height:38px; border-radius:50%; background:var(--surface-2); border:1px solid var(--border); color:var(--text); display:grid; place-items:center; font-size:17px; cursor:pointer; flex-shrink:0;} .iconbtn:active{transform:scale(.94);} .iconbtn.spin{animation:spin 0.7s linear;}
@@ -171,15 +173,16 @@
       <span class="sub" id="t-owner">Owner</span>
     </div>
     <div style="display:flex; align-items:center; gap:10px;">
-      <input type="date" class="period period-date" id="period-from" aria-label="From date"/>
-      <span style="color:var(--text-muted);font-size:12px;">to</span>
-      <input type="date" class="period period-date" id="period-to" aria-label="To date"/>
+      
       <button class="iconbtn" id="btn-refresh" aria-label="Refresh data" title="Refresh">🔄</button>
       <div class="avatar" id="avatar">E</div>
     </div>
   </div>
 
-  <main>
+  <div class="period-bar"><input type="date" class="period period-date" id="period-from" aria-label="From date"/>
+      <span style="color:var(--text-muted);font-size:12px;">to</span>
+      <input type="date" class="period period-date" id="period-to" aria-label="To date"/></div>
+<main>
     <section class="tabpane active" id="pane-mine">
       <div class="kpis">
         <div class="kpi"><div class="label">My AP</div><div class="val accent" id="m-ap">&mdash;</div><div class="sub" id="m-ap-sub">Personal production</div></div>
